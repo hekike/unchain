@@ -2,6 +2,11 @@
 
 Inspired by: https://github.com/conventional-changelog
 
+Follows:
+
+- https://semver.org
+- https://www.conventionalcommits.org
+
 ## Generate changelog
 
 It automatically detects the last tag and bumps the patch, minor or major
