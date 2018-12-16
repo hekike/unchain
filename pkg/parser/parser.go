@@ -11,7 +11,8 @@ import (
 )
 
 var pattern = regexp.MustCompile(`^(?:(\w+)\(?(\w+)\)?: (.+))(?:(?:\r?\n|$){0,2}(.+))?(?:(?:\r?\n|$){0,2}(.+))?(?:\r?\n|$){0,2}`)
-var breakingChange = "BREAKING CHANGE"
+var breakingChange = "BREAKING CHANGE: "
+var tagPrefix = "refs/tags/"
 
 // ParseCommits parses commits
 func ParseCommits(path string) ([]model.ConventionalCommit, error) {
@@ -20,16 +21,7 @@ func ParseCommits(path string) ([]model.ConventionalCommit, error) {
 		return nil, err
 	}
 
-	tagrefs, err := r.Tags()
-	if err != nil {
-		return nil, err
-	}
-
-	var recentTag *plumbing.Reference
-	err = tagrefs.ForEach(func(tag *plumbing.Reference) error {
-		recentTag = tag
-		return nil
-	})
+	lastTag, err := GetLastTag(path)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +40,7 @@ func ParseCommits(path string) ([]model.ConventionalCommit, error) {
 	var commits []model.ConventionalCommit
 
 	err = cIter.ForEach(func(c *object.Commit) error {
-		if recentTag != nil && c.Hash == recentTag.Hash() {
+		if lastTag != nil && c.Hash.String() == lastTag.Hash {
 			found = true
 		}
 		if found == true {
@@ -72,9 +64,11 @@ func ParseCommits(path string) ([]model.ConventionalCommit, error) {
 
 		if strings.Contains(commit.Body, breakingChange) {
 			commit.SemVerChange = model.Major
+			commit.Breaking = commit.Body[len(breakingChange):]
 		}
 		if strings.Contains(commit.Footer, breakingChange) {
 			commit.SemVerChange = model.Major
+			commit.Breaking = commit.Footer[len(breakingChange):]
 		}
 
 		commits = append(commits, commit)
@@ -86,4 +80,43 @@ func ParseCommits(path string) ([]model.ConventionalCommit, error) {
 	}
 
 	return commits, nil
+}
+
+// GetLastTag get last tag
+func GetLastTag(path string) (*model.Tag, error) {
+	r, err := git.PlainOpen(path)
+	if err != nil {
+		return nil, err
+	}
+
+	tagrefs, err := r.Tags()
+	if err != nil {
+		return nil, err
+	}
+
+	var recentTag *plumbing.Reference
+	err = tagrefs.ForEach(func(tag *plumbing.Reference) error {
+		recentTag = tag
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if recentTag == nil {
+		return nil, nil
+	}
+
+	version := recentTag.Name().String()[len(tagPrefix):]
+	// Remove v prefix if presented
+	if version[0] == 'v' {
+		version = version[1:]
+	}
+
+	tag := &model.Tag{
+		Name: recentTag.Name().String()[len(tagPrefix):],
+		Hash: recentTag.Hash().String(),
+	}
+
+	return tag, nil
 }
