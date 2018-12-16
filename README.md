@@ -4,6 +4,11 @@ Inspired by: https://github.com/conventional-changelog
 
 ## Generate changelog
 
+It automatically detects the last tag and bumps the patch, minor or major
+semver component based on the commits since tha last tag.
+
+If there is no tag specific it will start with `1.0.0`.
+
 ```sh
 $ changelog /my-dir
 <a name="2.0.0"></a>
