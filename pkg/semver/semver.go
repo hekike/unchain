@@ -22,12 +22,12 @@ func GetChange(commits []model.ConventionalCommit) model.SemVerChange {
 }
 
 // GetVersion calculate version
-func GetVersion(tag *model.Tag, change model.SemVerChange) (string, error) {
-	if tag == nil {
+func GetVersion(version string, change model.SemVerChange) (string, error) {
+	if version == "" {
 		return "1.0.0", nil
 	}
 
-	v, err := sv.NewVersion(tag.Name)
+	v, err := sv.NewVersion(version)
 	if err != nil {
 		return "", err
 	}
