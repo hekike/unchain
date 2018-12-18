@@ -3,11 +3,11 @@ package changelog
 import (
 	"fmt"
 
-	"github.com/hekike/conventional-commits/pkg/model"
+	"github.com/hekike/conventional-commits/pkg/parser"
 )
 
 // Save generates and adds changelog.md to Git
-func Save(dir string, version string, commits []model.ConventionalCommit) (
+func Save(dir string, version string, commits []parser.ConventionalCommit) (
 	string,
 	error,
 ) {

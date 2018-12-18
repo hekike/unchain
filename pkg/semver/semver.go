@@ -4,25 +4,25 @@ import (
 	"fmt"
 
 	sv "github.com/coreos/go-semver/semver"
-	"github.com/hekike/conventional-commits/pkg/model"
+	"github.com/hekike/conventional-commits/pkg/parser"
 )
 
 // GetChange determinate semver changes (patch, minor, major)
-func GetChange(commits []model.ConventionalCommit) model.SemVerChange {
-	var change model.SemVerChange = model.Patch
+func GetChange(commits []parser.ConventionalCommit) parser.SemVerChange {
+	var change parser.SemVerChange = parser.Patch
 	for _, commit := range commits {
-		if change != model.Major && commit.SemVerChange == model.Minor {
-			change = model.Minor
+		if change != parser.Major && commit.SemVerChange == parser.Minor {
+			change = parser.Minor
 		}
-		if commit.SemVerChange == model.Major {
-			change = model.Major
+		if commit.SemVerChange == parser.Major {
+			change = parser.Major
 		}
 	}
 	return change
 }
 
 // GetVersion calculate version
-func GetVersion(version string, change model.SemVerChange) (string, error) {
+func GetVersion(version string, change parser.SemVerChange) (string, error) {
 	if version == "" {
 		return "1.0.0", nil
 	}
@@ -37,11 +37,11 @@ func GetVersion(version string, change model.SemVerChange) (string, error) {
 	}
 
 	switch change {
-	case model.Patch:
+	case parser.Patch:
 		v.BumpPatch()
-	case model.Minor:
+	case parser.Minor:
 		v.BumpMinor()
-	case model.Major:
+	case parser.Major:
 		v.BumpMajor()
 	default:
 		return "", fmt.Errorf("Invalid change type %s", change)

@@ -5,17 +5,41 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/hekike/conventional-commits/pkg/model"
 	git "gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
+
+// SemVerChange describes the semver change type
+type SemVerChange string
+
+const (
+	// Patch semver change
+	Patch SemVerChange = "patch"
+	// Minor semver change
+	Minor SemVerChange = "minor"
+	// Major semver change
+	Major SemVerChange = "major"
+)
+
+// ConventionalCommit parsed commit
+type ConventionalCommit struct {
+	Hash         string
+	Type         string
+	Component    string
+	Description  string
+	Body         string
+	Footer       string
+	Breaking     string
+	SemVerChange SemVerChange
+	SemVer       string
+}
 
 var pattern = regexp.MustCompile(`^(?:(\w+)\(?(\w+)\)?: (.+))(?:(?:\r?\n|$){0,2}(.+))?(?:(?:\r?\n|$){0,2}(.+))?(?:\r?\n|$){0,2}`)
 var versionPattern = regexp.MustCompile(`^update for version ((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$`)
 var breakingChange = "BREAKING CHANGE: "
 
 // ParseCommits parses commits
-func ParseCommits(dir string) ([]model.ConventionalCommit, error) {
+func ParseCommits(dir string) ([]ConventionalCommit, error) {
 	r, err := git.PlainOpen(dir)
 	if err != nil {
 		return nil, fmt.Errorf("[ParseCommits] open repo: %v", err)
@@ -32,7 +56,7 @@ func ParseCommits(dir string) ([]model.ConventionalCommit, error) {
 	}
 
 	var found = false
-	var commits []model.ConventionalCommit
+	var commits []ConventionalCommit
 
 	err = cIter.ForEach(func(c *object.Commit) error {
 		if found == true {
@@ -40,14 +64,14 @@ func ParseCommits(dir string) ([]model.ConventionalCommit, error) {
 		}
 		tmp := pattern.FindStringSubmatch(c.Message)
 
-		commit := model.ConventionalCommit{
+		commit := ConventionalCommit{
 			Hash:         c.Hash.String(),
 			Type:         tmp[1],
 			Component:    tmp[2],
 			Description:  tmp[3],
 			Body:         tmp[4],
 			Footer:       tmp[5],
-			SemVerChange: model.Patch,
+			SemVerChange: Patch,
 		}
 
 		// Detect last semver bump
@@ -59,15 +83,15 @@ func ParseCommits(dir string) ([]model.ConventionalCommit, error) {
 		}
 
 		if commit.Type == "feat" {
-			commit.SemVerChange = model.Minor
+			commit.SemVerChange = Minor
 		}
 
 		if strings.Contains(commit.Body, breakingChange) {
-			commit.SemVerChange = model.Major
+			commit.SemVerChange = Major
 			commit.Breaking = commit.Body[len(breakingChange):]
 		}
 		if strings.Contains(commit.Footer, breakingChange) {
-			commit.SemVerChange = model.Major
+			commit.SemVerChange = Major
 			commit.Breaking = commit.Footer[len(breakingChange):]
 		}
 

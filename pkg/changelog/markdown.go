@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hekike/conventional-commits/pkg/model"
+	"github.com/hekike/conventional-commits/pkg/parser"
 )
 
 // Generate generate markdown output
-func Generate(version string, commits []model.ConventionalCommit) string {
+func Generate(version string, commits []parser.ConventionalCommit) string {
 	var out bytes.Buffer
 	var patch = false
 	var minor = false
@@ -22,7 +22,7 @@ func Generate(version string, commits []model.ConventionalCommit) string {
 
 	// Patch
 	for _, commit := range commits {
-		if commit.SemVerChange == model.Patch &&
+		if commit.SemVerChange == parser.Patch &&
 			// Skip non user facing commits from changelog
 			commit.Type != "chore" && commit.Type != "refactor" {
 
@@ -39,7 +39,7 @@ func Generate(version string, commits []model.ConventionalCommit) string {
 
 	// Minor
 	for _, commit := range commits {
-		if commit.SemVerChange == model.Minor {
+		if commit.SemVerChange == parser.Minor {
 			if minor == false {
 				out.WriteString("\n#### Features\n")
 			}
@@ -53,7 +53,7 @@ func Generate(version string, commits []model.ConventionalCommit) string {
 
 	// Major
 	for _, commit := range commits {
-		if commit.SemVerChange == model.Major {
+		if commit.SemVerChange == parser.Major {
 			if major == false {
 				out.WriteString("\n#### Breaking Changes\n")
 			}
@@ -75,7 +75,7 @@ func Generate(version string, commits []model.ConventionalCommit) string {
 	return out.String()
 }
 
-func getCommitLine(commit *model.ConventionalCommit) string {
+func getCommitLine(commit *parser.ConventionalCommit) string {
 	var out bytes.Buffer
 
 	out.WriteString("\n* ")
@@ -90,7 +90,7 @@ func getCommitLine(commit *model.ConventionalCommit) string {
 	return out.String()
 }
 
-func getBreakingLine(commit *model.ConventionalCommit) string {
+func getBreakingLine(commit *parser.ConventionalCommit) string {
 	var out bytes.Buffer
 
 	out.WriteString("\n* ")
