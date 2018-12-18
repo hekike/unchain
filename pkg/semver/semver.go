@@ -29,7 +29,11 @@ func GetVersion(version string, change model.SemVerChange) (string, error) {
 
 	v, err := sv.NewVersion(version)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf(
+			"[semver.GetVersion] parse version (%s): %v",
+			version,
+			err,
+		)
 	}
 
 	switch change {

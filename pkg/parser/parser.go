@@ -1,48 +1,40 @@
 package parser
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/hekike/conventional-commits/pkg/model"
 	git "gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 var pattern = regexp.MustCompile(`^(?:(\w+)\(?(\w+)\)?: (.+))(?:(?:\r?\n|$){0,2}(.+))?(?:(?:\r?\n|$){0,2}(.+))?(?:\r?\n|$){0,2}`)
+var versionPattern = regexp.MustCompile(`^update for version ((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$`)
 var breakingChange = "BREAKING CHANGE: "
-var tagPrefix = "refs/tags/"
 
 // ParseCommits parses commits
-func ParseCommits(path string) ([]model.ConventionalCommit, error) {
-	r, err := git.PlainOpen(path)
+func ParseCommits(dir string) ([]model.ConventionalCommit, error) {
+	r, err := git.PlainOpen(dir)
 	if err != nil {
-		return nil, err
-	}
-
-	lastTag, err := GetLastTag(path)
-	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[ParseCommits] open repo: %v", err)
 	}
 
 	ref, err := r.Head()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[ParseCommits] head: %v", err)
 	}
 
 	cIter, err := r.Log(&git.LogOptions{From: ref.Hash()})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[ParseCommits] git log: %v", err)
 	}
 
 	var found = false
 	var commits []model.ConventionalCommit
 
 	err = cIter.ForEach(func(c *object.Commit) error {
-		if lastTag != nil && c.Hash.String() == lastTag.Hash {
-			found = true
-		}
 		if found == true {
 			return nil
 		}
@@ -56,6 +48,14 @@ func ParseCommits(path string) ([]model.ConventionalCommit, error) {
 			Body:         tmp[4],
 			Footer:       tmp[5],
 			SemVerChange: model.Patch,
+		}
+
+		// Detect last semver bump
+		tmp = versionPattern.FindStringSubmatch(commit.Description)
+		if commit.Type == "chore" && commit.Component == "changelog" &&
+			len(tmp) > 0 {
+			found = true
+			commit.SemVer = tmp[1]
 		}
 
 		if commit.Type == "feat" {
@@ -76,47 +76,8 @@ func ParseCommits(path string) ([]model.ConventionalCommit, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[ParseCommits] parse: %v", err)
 	}
 
 	return commits, nil
-}
-
-// GetLastTag get last tag
-func GetLastTag(path string) (*model.Tag, error) {
-	r, err := git.PlainOpen(path)
-	if err != nil {
-		return nil, err
-	}
-
-	tagrefs, err := r.Tags()
-	if err != nil {
-		return nil, err
-	}
-
-	var recentTag *plumbing.Reference
-	err = tagrefs.ForEach(func(tag *plumbing.Reference) error {
-		recentTag = tag
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if recentTag == nil {
-		return nil, nil
-	}
-
-	version := recentTag.Name().String()[len(tagPrefix):]
-	// Remove v prefix if presented
-	if version[0] == 'v' {
-		version = version[1:]
-	}
-
-	tag := &model.Tag{
-		Name: recentTag.Name().String()[len(tagPrefix):],
-		Hash: recentTag.Hash().String(),
-	}
-
-	return tag, nil
 }

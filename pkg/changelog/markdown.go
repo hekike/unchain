@@ -1,4 +1,4 @@
-package markdown
+package changelog
 
 import (
 	"bytes"
@@ -22,7 +22,10 @@ func Generate(version string, commits []model.ConventionalCommit) string {
 
 	// Patch
 	for _, commit := range commits {
-		if commit.SemVerChange == model.Patch {
+		if commit.SemVerChange == model.Patch &&
+			// Skip non user facing commits from changelog
+			commit.Type != "chore" && commit.Type != "refactor" {
+
 			if patch == false {
 				out.WriteString("#### Bug Fixes\n")
 			}
@@ -61,6 +64,13 @@ func Generate(version string, commits []model.ConventionalCommit) string {
 	if major == true {
 		out.WriteString("\n")
 	}
+
+	// No user facing commit
+	if patch == false && minor == false && major == false {
+		out.WriteString("* There is no user facing commit in this version\n")
+	}
+
+	out.WriteString("\n\n")
 
 	return out.String()
 }

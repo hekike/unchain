@@ -22,10 +22,5 @@ type ConventionalCommit struct {
 	Footer       string
 	Breaking     string
 	SemVerChange SemVerChange
-}
-
-// Tag git tag
-type Tag struct {
-	Hash string
-	Name string
+	SemVer       string
 }
