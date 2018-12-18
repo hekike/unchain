@@ -21,5 +21,4 @@ func main() {
 
 	change := semver.GetChange(commits)
 	fmt.Println(change)
-
 }
