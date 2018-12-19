@@ -42,13 +42,36 @@ func ParsePackage(dir string) (*Package, error) {
 	return &pkg, nil
 }
 
+// Release npm package
+func Release(dir string, version string, change string) error {
+	_, err := Bump(dir, version, change)
+	if err != nil {
+		return fmt.Errorf("[Release] bump: %v", err)
+	}
+
+	_, err = Publish(dir)
+	if err != nil {
+		return fmt.Errorf("[Release] publish: %v", err)
+	}
+
+	return nil
+}
+
 // Bump version in package.json and git
 func Bump(dir string, version string, change string) (string, error) {
-	// TODO: set workdir
 	message := fmt.Sprintf("chore(package): bump version to %s", version)
 	out, err := runner.Run(dir, "npm", "version", change, "--message", message)
 	if err != nil {
 		return "", fmt.Errorf("[Bump] exec command: %v %s", err, string(out))
+	}
+	return string(out), nil
+}
+
+// Publish package to npm
+func Publish(dir string) (string, error) {
+	out, err := runner.Run(dir, "npm", "publish")
+	if err != nil {
+		return "", fmt.Errorf("[Publish] exec command: %v %s", err, string(out))
 	}
 	return string(out), nil
 }

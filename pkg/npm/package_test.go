@@ -22,7 +22,7 @@ func TestParsePackage(t *testing.T) {
 }
 
 func TestBump(t *testing.T) {
-	runner = TestBumpRunner{}
+	runner = TestRunner{}
 
 	d := "./mock"
 	v := "1.0.0"
@@ -41,4 +41,17 @@ func TestBump(t *testing.T) {
 		),
 		res,
 	)
+}
+
+func TestPublish(t *testing.T) {
+	runner = TestRunner{}
+
+	d := "./mock"
+
+	res, err := Publish(d)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, fmt.Sprintf("%s,publish\n", d), res)
 }

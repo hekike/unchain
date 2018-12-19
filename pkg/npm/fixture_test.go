@@ -8,14 +8,14 @@ import (
 	"testing"
 )
 
-type TestBumpRunner struct{}
+type TestRunner struct{}
 
-func (c TestBumpRunner) Run(
+func (c TestRunner) Run(
 	dir string,
 	command string,
 	args ...string,
 ) ([]byte, error) {
-	cs := []string{"-test.run=TestNpmBumpExecsHelper", "--"}
+	cs := []string{"-test.run=TestNpmExecsHelper", "--"}
 	cs = append(cs, args...)
 	cmd := exec.Command(os.Args[0], cs...)
 	cmd.Dir = dir
@@ -27,7 +27,7 @@ func (c TestBumpRunner) Run(
 	return out, err
 }
 
-func TestNpmBumpExecsHelper(*testing.T) {
+func TestNpmExecsHelper(*testing.T) {
 	if os.Getenv("BUMP_ARGS") == "" {
 		return
 	}

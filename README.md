@@ -2,11 +2,13 @@
 
 [![CircleCI](https://circleci.com/gh/hekike/unchain.svg?style=svg&circle-token=c7e325c818a4865e9660d944d97fb5fae4b37043)](https://circleci.com/gh/hekike/unchain)
 
-Automatic release tool based on conventional commits and SemVer.
+Release tool with automatic changelog generation and next SemVer version calculation based on conventional commits.
 
 ## Install
 
+```sh
 go get https://github.com/hekike/unchain
+```
 
 ## Usage
 
@@ -28,8 +30,9 @@ If there is no tag specific it will start with `1.0.0`.
 * Detects next SemVer version based on commit history
 * Detects current version from release commits made by this tool or from package.json
 * Creates or prepends `CHANGELOG.md`
-* Execs `npm version` if finds package.json
+* *(optional)* Execs `npm version` if finds package.json
 * Git tags release
+* *(optional)* `npm publish` if finds package.json
 
 *CHANGELOG.md example*
 
@@ -68,7 +71,10 @@ Skips non API facing commits from the changelog like `test`, `chore` and `refact
 
 ## Background
 
-Inspired by: https://github.com/conventional-changelog
+Inspired by:
+
+- https://github.com/conventional-changelog
+- https://github.com/Unleash/unleash
 
 Follows:
 
