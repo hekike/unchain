@@ -37,8 +37,8 @@ If there is no commit found related to previous version it will release `1.0.0`.
 
 ```sh
 $ unchain /my-dir
-<a name="1.0.0"></a>
-## 1.0.0 (2018-12-16)
+<a name="2.0.0"></a>
+## 2.0.0 (2018-12-16)
 
 
 #### Bug Fixes
@@ -100,7 +100,7 @@ Parse commits since latest Git Tag.
 ```sh
 $ conv-parse /my-dir
 hash,semver,type,component,description,body,footer
-ecd94da5b9f10c04ce53723729ae7068cc73557e,major,fix,foo,fifth commit,body,BREAKING CHANGE: so breaking, much pain
+ecd94da5b9f10c04ce53723729ae7068cc73557e,major,fix,foo,fifth commit,body,BREAKING CHANGE: so breaking
 29afc9699602e73418395226f22389a5271c5e58,major,fix,bar,fourth commit,BREAKING CHANGE: blabla,
 6289d27b800d3966ec7f14394ff4c48b08dd5976,patch,fix,foo,third commit,body,
 998df6abedeeb0e090986b5de3a89e62c03c436d,patch,chore,foo,second commit,,
