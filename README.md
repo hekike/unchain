@@ -55,7 +55,7 @@ $ release /my-dir
 
 - `1.0.0` (with package.json, v1.0.0)
 
-Skips non API facing commits from the changelog like `chore` and `refactor`.
+Skips non API facing commits from the changelog like `test`, `chore` and `refactor`.
 
 ## Detect SemVer change since latest tag
 

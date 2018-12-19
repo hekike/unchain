@@ -64,6 +64,11 @@ func ParseCommits(dir string) ([]ConventionalCommit, error) {
 		}
 		tmp := pattern.FindStringSubmatch(c.Message)
 
+		// Skip commit that doesn't follow the conventional format
+		if len(tmp) < 6 {
+			return nil
+		}
+
 		commit := ConventionalCommit{
 			Hash:         c.Hash.String(),
 			Type:         tmp[1],

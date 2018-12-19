@@ -24,7 +24,7 @@ func Generate(version string, commits []parser.ConventionalCommit) string {
 	for _, commit := range commits {
 		if commit.SemVerChange == parser.Patch &&
 			// Skip non user facing commits from changelog
-			commit.Type != "chore" && commit.Type != "refactor" {
+			commit.Type != "test" && commit.Type != "chore" && commit.Type != "refactor" {
 
 			if patch == false {
 				out.WriteString("#### Bug Fixes\n")
