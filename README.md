@@ -2,21 +2,28 @@
 
 [![CircleCI](https://circleci.com/gh/hekike/unchain.svg?style=svg&circle-token=c7e325c818a4865e9660d944d97fb5fae4b37043)](https://circleci.com/gh/hekike/unchain)
 
-Inspired by: https://github.com/conventional-changelog
+Automatic release tool based on conventional commits and SemVer.
 
-Follows:
+## Install
 
-- https://semver.org
-- https://www.conventionalcommits.org
+go get https://github.com/hekike/unchain
 
-## unchain (release)
+## Usage
+
+Run in your terminal:
+
+```sh
+unchain
+```
+
+## How It Works
 
 It automatically detects the last tag and bumps the `patch`, `minor` or `major`
 semver component based on the commits since tha last tag.
 
 If there is no tag specific it will start with `1.0.0`.
 
-*Workflow*
+*What it does*
 
 * Detects next SemVer version based on commit history
 * Detects current version from release commits made by this tool or from package.json
@@ -59,14 +66,31 @@ $ unchain /my-dir
 
 Skips non API facing commits from the changelog like `test`, `chore` and `refactor`.
 
-## Detect SemVer change since latest tag
+## Background
+
+Inspired by: https://github.com/conventional-changelog
+
+Follows:
+
+- https://semver.org
+- https://www.conventionalcommits.org
+
+## Additional Binaries
+
+Under `cmd` you can find additional binaries.
+
+### conv-change
+
+Detect SemVer change since latest Git Tag.
 
 ```sh
 $ conv-change /my-dir
 major
 ```
 
-## Parse commits since latest tag
+### conv-parse
+
+Parse commits since latest Git Tag.
 
 ```sh
 $ conv-parse /my-dir
