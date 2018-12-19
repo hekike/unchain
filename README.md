@@ -1,5 +1,7 @@
 # conventional-commits
 
+[![CircleCI](https://circleci.com/gh/hekike/conventional-commits.svg?style=svg&circle-token=c7e325c818a4865e9660d944d97fb5fae4b37043)](https://circleci.com/gh/hekike/conventional-commits)
+
 Inspired by: https://github.com/conventional-changelog
 
 Follows:
