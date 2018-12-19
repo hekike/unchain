@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sv "github.com/coreos/go-semver/semver"
-	"github.com/hekike/conventional-commits/pkg/parser"
+	"github.com/hekike/unchain/pkg/parser"
 )
 
 // GetChange determinate semver changes (patch, minor, major)

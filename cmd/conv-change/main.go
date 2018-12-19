@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hekike/conventional-commits/pkg/cli-tools"
-	"github.com/hekike/conventional-commits/pkg/parser"
-	"github.com/hekike/conventional-commits/pkg/semver"
+	"github.com/hekike/unchain/pkg/cli-tools"
+	"github.com/hekike/unchain/pkg/parser"
+	"github.com/hekike/unchain/pkg/semver"
 )
 
 func main() {

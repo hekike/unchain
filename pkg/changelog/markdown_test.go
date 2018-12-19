@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hekike/conventional-commits/pkg/parser"
+	"github.com/hekike/unchain/pkg/parser"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -3,10 +3,10 @@ package release
 import (
 	"fmt"
 
-	"github.com/hekike/conventional-commits/pkg/changelog"
-	"github.com/hekike/conventional-commits/pkg/npm"
-	"github.com/hekike/conventional-commits/pkg/parser"
-	"github.com/hekike/conventional-commits/pkg/semver"
+	"github.com/hekike/unchain/pkg/changelog"
+	"github.com/hekike/unchain/pkg/npm"
+	"github.com/hekike/unchain/pkg/parser"
+	"github.com/hekike/unchain/pkg/semver"
 )
 
 // Result result of release

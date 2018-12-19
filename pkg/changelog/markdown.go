@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hekike/conventional-commits/pkg/parser"
+	"github.com/hekike/unchain/pkg/parser"
 )
 
 // Generate generate markdown output

@@ -5,14 +5,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/hekike/conventional-commits/pkg/cli-tools"
-	"github.com/hekike/conventional-commits/pkg/release"
+	"github.com/hekike/unchain/pkg/cli-tools"
+	"github.com/hekike/unchain/pkg/release"
 )
 
 func main() {
 	var path string
 
-	if (len(os.Args)) == 0 {
+	if (len(os.Args)) == 1 {
 		dir, err := os.Getwd()
 		if err != nil {
 			log.Fatal(err)

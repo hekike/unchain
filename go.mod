@@ -1,4 +1,4 @@
-module github.com/hekike/conventional-commits
+module github.com/hekike/unchain
 
 require (
 	github.com/coreos/go-semver v0.2.0

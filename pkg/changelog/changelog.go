@@ -3,7 +3,7 @@ package changelog
 import (
 	"fmt"
 
-	"github.com/hekike/conventional-commits/pkg/parser"
+	"github.com/hekike/unchain/pkg/parser"
 )
 
 // Save generates and adds changelog.md to Git
