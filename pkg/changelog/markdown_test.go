@@ -2,6 +2,7 @@ package changelog
 
 import (
 	"testing"
+	"time"
 
 	"github.com/hekike/conventional-commits/pkg/parser"
 	"github.com/stretchr/testify/assert"
@@ -10,9 +11,11 @@ import (
 func TestGenerate(t *testing.T) {
 	commits := []parser.ConventionalCommit{}
 
+	date := time.Now().Format("2006-01-02")
+
 	// Zero commits
 	res := Generate("1.0.0", commits)
-	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 (2018-12-18)\n"+
+	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 ("+date+")\n"+
 		"\n\n* There is no user facing commit in this version"+
 		"\n"+
 		"\n\n", res)
@@ -25,7 +28,7 @@ func TestGenerate(t *testing.T) {
 		SemVerChange: parser.Patch,
 	})
 	res = Generate("1.0.0", commits)
-	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 (2018-12-18)\n"+
+	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 ("+date+")\n"+
 		"\n\n#### Bug Fixes\n"+
 		"\n* **foo:** fixing dividing by zero "+
 		"\n"+
@@ -39,7 +42,7 @@ func TestGenerate(t *testing.T) {
 		SemVerChange: parser.Minor,
 	})
 	res = Generate("1.0.0", commits)
-	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 (2018-12-18)\n"+
+	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 ("+date+")\n"+
 		"\n\n#### Bug Fixes\n"+
 		"\n* **foo:** fixing dividing by zero "+
 		"\n\n#### Features\n"+
@@ -55,7 +58,7 @@ func TestGenerate(t *testing.T) {
 		SemVerChange: parser.Major,
 	})
 	res = Generate("1.0.0", commits)
-	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 (2018-12-18)\n"+
+	assert.Equal(t, "<a name=\"1.0.0\"></a>\n## 1.0.0 ("+date+")\n"+
 		"\n\n#### Bug Fixes\n"+
 		"\n* **foo:** fixing dividing by zero "+
 		"\n\n#### Features\n"+
