@@ -95,7 +95,7 @@ func Release(path string, ch chan Result) {
 
 	// Release: npm
 	if isNpm {
-		_, err = npm.Release(path, newVersion, string(change))
+		err = npm.Release(path, newVersion, string(change))
 		if err != nil {
 			ch <- Result{
 				Error: fmt.Errorf("[Release] npm bump: %v", err),
