@@ -1,3 +1,17 @@
+<a name="1.2.0"></a>
+## 1.2.0 (2018-12-19)
+
+
+#### Bug Fixes
+
+* **release:** variable assingment 100166cfe94cdbe2234355871b0d95295e2a679e
+* **README:** update 203b21a39587e29c210d7e8ea61e1651badcc64e
+
+#### Features
+
+* **npm:** publish beb6df0efff827f70b75e509ad8a999cfbad043a
+
+
 <a name="1.1.0"></a>
 ## 1.1.0 (2018-12-19)
 
