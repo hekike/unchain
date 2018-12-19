@@ -9,7 +9,7 @@ Follows:
 - https://semver.org
 - https://www.conventionalcommits.org
 
-## Release
+## unchain (release)
 
 It automatically detects the last tag and bumps the `patch`, `minor` or `major`
 semver component based on the commits since tha last tag.
@@ -27,7 +27,7 @@ If there is no tag specific it will start with `1.0.0`.
 *CHANGELOG.md example*
 
 ```sh
-$ release /my-dir
+$ unchain /my-dir
 <a name="1.0.0"></a>
 ## 1.0.0 (2018-12-16)
 
@@ -62,14 +62,14 @@ Skips non API facing commits from the changelog like `test`, `chore` and `refact
 ## Detect SemVer change since latest tag
 
 ```sh
-$ change /my-dir
+$ conv-change /my-dir
 major
 ```
 
 ## Parse commits since latest tag
 
 ```sh
-$ parse /my-dir
+$ conv-parse /my-dir
 hash,semver,type,component,description,body,footer
 ecd94da5b9f10c04ce53723729ae7068cc73557e,major,fix,foo,fifth commit,body,BREAKING CHANGE: so braking, much pain
 29afc9699602e73418395226f22389a5271c5e58,major,fix,bar,fourth commit,BREAKING CHANGE: blabla,
