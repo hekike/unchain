@@ -7,7 +7,7 @@ Release tool with automatic changelog generation and next SemVer version calcula
 ## Install
 
 ```sh
-go get https://github.com/hekike/unchain
+go get github.com/hekike/unchain
 ```
 
 ## Usage
