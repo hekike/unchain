@@ -15,8 +15,10 @@ go get https://github.com/hekike/unchain
 Run in your terminal:
 
 ```sh
-unchain
+unchain [dir]
 ```
+
+- `dir` optional *(default: workdir)*, directory
 
 ## How It Works
 
@@ -35,8 +37,7 @@ If there is no commit found related to previous version it will release `1.0.0`.
 
 *CHANGELOG.md example*
 
-```sh
-$ unchain /my-dir
+```
 <a name="2.0.0"></a>
 ## 2.0.0 (2018-12-16)
 
