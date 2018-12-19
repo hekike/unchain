@@ -20,11 +20,10 @@ unchain
 
 ## How It Works
 
-Automatically detects the last tag and bumps the `patch`, `minor` or `major`
-semver component based on the commits since tha last tag.
+Automatically detects the last version and bumps the `patch`, `minor` or `major` semver component based on the conventional commits since that release.
 If there is no commit found related to previous version it will release `1.0.0`.
 
-*What it does*
+*What It Does*
 
 * Detects next SemVer version based on commit history
 * Detects current version from release commits made by this tool or from package.json
