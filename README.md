@@ -20,10 +20,9 @@ unchain
 
 ## How It Works
 
-It automatically detects the last tag and bumps the `patch`, `minor` or `major`
+Automatically detects the last tag and bumps the `patch`, `minor` or `major`
 semver component based on the commits since tha last tag.
-
-If there is no tag specific it will start with `1.0.0`.
+If there is no commit found related to previous version it will release `1.0.0`.
 
 *What it does*
 
@@ -33,7 +32,7 @@ If there is no tag specific it will start with `1.0.0`.
 * *(optional)* Execs `npm version` if finds package.json
 * Git tags release
 * *(optional)* `npm publish` if finds package.json
-* `git push` to sync with remote
+* Runs `git push` to sync with remote
 
 *CHANGELOG.md example*
 
