@@ -33,6 +33,7 @@ If there is no tag specific it will start with `1.0.0`.
 * *(optional)* Execs `npm version` if finds package.json
 * Git tags release
 * *(optional)* `npm publish` if finds package.json
+* `git push` to sync with remote
 
 *CHANGELOG.md example*
 
