@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hekike/unchain/pkg/changelog"
+	"github.com/hekike/unchain/pkg/git"
 	"github.com/hekike/unchain/pkg/npm"
 	"github.com/hekike/unchain/pkg/parser"
 	"github.com/hekike/unchain/pkg/semver"
@@ -98,16 +99,16 @@ func Release(path string, ch chan Result) {
 		err = npm.Release(path, newVersion, string(change))
 		if err != nil {
 			ch <- Result{
-				Error: fmt.Errorf("[Release] npm bump: %v", err),
+				Error: fmt.Errorf("[Release] npm: %v", err),
 			}
 			return
 		}
 	} else {
 		// Release: git
-		_, err = GitTag(path, newVersion)
+		err = git.Release(path, newVersion)
 		if err != nil {
 			ch <- Result{
-				Error: fmt.Errorf("[Release] git tag: %v", err),
+				Error: fmt.Errorf("[Release] git: %v", err),
 			}
 			return
 		}
