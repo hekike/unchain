@@ -25,8 +25,8 @@ If there is no commit found related to previous version it will release `1.0.0`.
 
 *What It Does*
 
-* Detects next SemVer version based on commit history
-* Detects current version from release commits made by this tool or from package.json
+* Detects the next SemVer version based on commit history
+* Detects the previous version from release commits made by this tool or from package.json if any
 * Creates or prepends `CHANGELOG.md`
 * *(optional)* Execs `npm version` if finds package.json
 * Git tags release
@@ -43,17 +43,17 @@ $ unchain /my-dir
 
 #### Bug Fixes
 
-* **foo:** third commit 6289d27b800d3966ec7f14394ff4c48b08dd5976
-* **foo:** second commit 998df6abedeeb0e090986b5de3a89e62c03c436d
+* **http:** fix DNS resolution 6289d27b800d3966ec7f14394ff4c48b08dd5976
+* **http:** fix port parsing 998df6abedeeb0e090986b5de3a89e62c03c436d
 
 #### Features
 
-* **foo:** initial commit a4a95856d51dc3018170f2a854581590d1a27687
+* **http:** add TLS support a4a95856d51dc3018170f2a854581590d1a27687
 
 #### Breaking Changes
 
-* so braking, much pain ecd94da5b9f10c04ce53723729ae7068cc73557e
-* blabla 29afc9699602e73418395226f22389a5271c5e58
+* make host config required ecd94da5b9f10c04ce53723729ae7068cc73557e
+* make port config required 29afc9699602e73418395226f22389a5271c5e58
 
 ```
 
@@ -100,7 +100,7 @@ Parse commits since latest Git Tag.
 ```sh
 $ conv-parse /my-dir
 hash,semver,type,component,description,body,footer
-ecd94da5b9f10c04ce53723729ae7068cc73557e,major,fix,foo,fifth commit,body,BREAKING CHANGE: so braking, much pain
+ecd94da5b9f10c04ce53723729ae7068cc73557e,major,fix,foo,fifth commit,body,BREAKING CHANGE: so breaking, much pain
 29afc9699602e73418395226f22389a5271c5e58,major,fix,bar,fourth commit,BREAKING CHANGE: blabla,
 6289d27b800d3966ec7f14394ff4c48b08dd5976,patch,fix,foo,third commit,body,
 998df6abedeeb0e090986b5de3a89e62c03c436d,patch,chore,foo,second commit,,
