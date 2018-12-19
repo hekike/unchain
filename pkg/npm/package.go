@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path"
 )
+
+var runner Runner = commandRunner{}
 
 // Package package.json
 type Package struct {
@@ -45,9 +46,7 @@ func ParsePackage(dir string) (*Package, error) {
 func Bump(dir string, version string, change string) (string, error) {
 	// TODO: set workdir
 	message := fmt.Sprintf("chore(package): bump version to %s", version)
-	cmd := exec.Command("npm", "version", change, "--message", message)
-	cmd.Dir = dir
-	out, err := cmd.CombinedOutput()
+	out, err := runner.Run(dir, "npm", "version", change, "--message", message)
 	if err != nil {
 		return "", fmt.Errorf("[Bump] exec command: %v %s", err, string(out))
 	}

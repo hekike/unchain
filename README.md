@@ -7,17 +7,27 @@ Follows:
 - https://semver.org
 - https://www.conventionalcommits.org
 
-## Generate changelog
+## Release
 
-It automatically detects the last tag and bumps the patch, minor or major
+It automatically detects the last tag and bumps the `patch`, `minor` or `major`
 semver component based on the commits since tha last tag.
 
 If there is no tag specific it will start with `1.0.0`.
 
+*Workflow*
+
+* Detects next SemVer version based on commit history
+* Detects current version from release commits made by this tool or from package.json
+* Creates or prepends `CHANGELOG.md`
+* Execs `npm version` if finds package.json
+* Git tags release
+
+*CHANGELOG.md example*
+
 ```sh
-$ changelog /my-dir
-<a name="2.0.0"></a>
-## 2.0.0 (2018-12-16)
+$ release /my-dir
+<a name="1.0.0"></a>
+## 1.0.0 (2018-12-16)
 
 
 #### Bug Fixes
@@ -36,10 +46,21 @@ $ changelog /my-dir
 
 ```
 
+*Commits example*
+
+- (optional, npm only): chore(package): bump version to 1.0.0
+- (always): chore(changelog): update for version 1.0.0
+
+*Tag created*
+
+- `1.0.0` (with package.json, v1.0.0)
+
+Skips non API facing commits from the changelog like `chore` and `refactor`.
+
 ## Detect SemVer change since latest tag
 
 ```sh
-$ bump /my-dir
+$ change /my-dir
 major
 ```
 

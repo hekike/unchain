@@ -1,6 +1,7 @@
 package npm
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,4 +19,26 @@ func TestParsePackage(t *testing.T) {
 	}
 	assert.Equal(t, "mock", res.Name)
 	assert.Equal(t, "1.0.0", res.Version)
+}
+
+func TestBump(t *testing.T) {
+	runner = TestBumpRunner{}
+
+	d := "./mock"
+	v := "1.0.0"
+	s := "major"
+
+	res, err := Bump(d, v, s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(
+		t,
+		fmt.Sprintf(
+			"%s,version,%s,--message,chore(package): bump version to %s\n",
+			d, s, v,
+		),
+		res,
+	)
 }
