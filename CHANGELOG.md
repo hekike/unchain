@@ -1,3 +1,22 @@
+<a name="2.0.0"></a>
+## 2.0.0 (2018-12-20)
+
+
+#### Bug Fixes
+
+* **readme:** fix install section 85bc705d9ef9f80df9029cd1313a6114fb366c6b
+* **readme:** update e3b756ed1cbb19f0704404ae6724b9b1e07abd9b
+* **readme:** update 78989dc3dbe078d42b44e494260016e290313673
+* **readme:** update 5db70d438a8307088a561fcc6a8b534ef2869eab
+* **readme:** update ec87b54a39078a77cbbae87b5a04659d5868fc56
+* **readme:** update 39997406ff7d386f2bc5cae0f19d13554d975109
+* **readme:** update dae87b537346efac8249978716e9928eb5b36823
+
+#### Breaking Changes
+
+* new command line interface 55a43d8a83a7188361fbc80fed1fd1ccad9a03fc
+
+
 <a name="1.3.0"></a>
 ## 1.3.0 (2018-12-19)
 
