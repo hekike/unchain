@@ -1,40 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-
-	"github.com/hekike/unchain/pkg/cli-tools"
-	"github.com/hekike/unchain/pkg/release"
+	"github.com/hekike/unchain/cmd"
+	"github.com/spf13/cobra"
 )
 
 func main() {
-	var path string
-
-	if (len(os.Args)) == 1 {
-		dir, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-			os.Exit(1)
-		}
-		path = dir
-	} else {
-		clitools.CheckArgs("<path>")
-		path = os.Args[1]
-	}
-
-	// Start release
-	results := make(chan release.Result)
-	go release.Release(path, results)
-
-	// Results
-	for res := range results {
-		if res.Error != nil {
-			log.Fatal(res.Error)
-			os.Exit(1)
-		}
-
-		fmt.Println(res.Message)
-	}
+	var rootCmd = &cobra.Command{Use: "unchain"}
+	rootCmd.AddCommand(cmd.GetParseCmd())
+	rootCmd.AddCommand(cmd.GetReleaseCmd())
+	rootCmd.AddCommand(cmd.GetSemverCmd())
+	rootCmd.Execute()
 }

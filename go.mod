@@ -3,6 +3,8 @@ module github.com/hekike/unchain
 require (
 	github.com/coreos/go-semver v0.2.0
 	github.com/emirpasic/gods v1.12.0 // indirect
+	github.com/spf13/cobra v0.0.3
+	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/stretchr/testify v1.2.2
 	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9 // indirect
 	golang.org/x/net v0.0.0-20181217023233-e147a9138326 // indirect
