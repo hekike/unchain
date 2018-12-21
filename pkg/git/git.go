@@ -5,6 +5,7 @@ import (
 	"time"
 
 	git "gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
@@ -59,7 +60,12 @@ func Push(dir string) error {
 	}
 
 	// push using default options
-	err = r.Push(&git.PushOptions{})
+	err = r.Push(&git.PushOptions{
+		RefSpecs: []config.RefSpec{
+			config.RefSpec("refs/heads/master:refs/heads/master"),
+			config.RefSpec("refs/tags/*:refs/tags/*"),
+		},
+	})
 	if err != nil {
 		return fmt.Errorf("[Push] push: %v", err)
 	}
