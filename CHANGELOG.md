@@ -1,3 +1,13 @@
+<a name="2.1.0"></a>
+## 2.1.0 (2018-12-21)
+
+
+
+#### Features
+
+* **git:** use git config user for commit and tag 9a3019780fd86c7ac520a6de96e8bca9c428b578
+
+
 <a name="2.0.1"></a>
 ## 2.0.1 (2018-12-21)
 
