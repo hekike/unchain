@@ -1,3 +1,13 @@
+<a name="2.0.1"></a>
+## 2.0.1 (2018-12-21)
+
+
+#### Bug Fixes
+
+* **npm:** git push for npm packages f3b6600cc3a4adedd0b2ed7d1716f1eaf0b7355c
+* **git:** push both tags and head 174c33e79ecba59b661dacce628107e519777909
+
+
 <a name="2.0.0"></a>
 ## 2.0.0 (2018-12-20)
 
