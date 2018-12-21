@@ -20,6 +20,15 @@ type Result struct {
 func Release(path string, ch chan Result) {
 	defer close(ch)
 
+	// Read Git User
+	user, err := git.GetUser(path)
+	if err != nil {
+		ch <- Result{
+			Error: fmt.Errorf("[Git] get user: %v", err),
+		}
+		return
+	}
+
 	// Parse commits
 	commits, err := parser.ParseCommits(path)
 	if err != nil {
@@ -86,7 +95,7 @@ func Release(path string, ch chan Result) {
 	}
 
 	// Generate changelog
-	_, err = changelog.Save(path, newVersion, commits)
+	_, err = changelog.Save(path, newVersion, commits, user)
 	if err != nil {
 		ch <- Result{
 			Error: fmt.Errorf("[Release] save changelog: %v", err),
@@ -106,7 +115,7 @@ func Release(path string, ch chan Result) {
 	}
 
 	// Release: Git
-	err = git.Release(path, newVersion)
+	err = git.Release(path, newVersion, user)
 	if err != nil {
 		ch <- Result{
 			Error: fmt.Errorf("[Release] git: %v", err),

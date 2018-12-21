@@ -11,8 +11,8 @@ import (
 )
 
 // Release Git release
-func Release(dir string, version string) error {
-	_, err := Tag(dir, version)
+func Release(dir string, version string, user *User) error {
+	_, err := Tag(dir, version, user)
 	if err != nil {
 		return fmt.Errorf("[Release] tag: %v", err)
 	}
@@ -25,8 +25,39 @@ func Release(dir string, version string) error {
 	return nil
 }
 
+// Commit commit file
+func Commit(dir string, file string, message string, user *User) error {
+	r, err := git.PlainOpen(dir)
+	if err != nil {
+		return fmt.Errorf("[Git] open repo: %v", err)
+	}
+
+	w, err := r.Worktree()
+	if err != nil {
+		return fmt.Errorf("[Git] worktree: %v", err)
+	}
+
+	_, err = w.Add(file)
+	if err != nil {
+		return fmt.Errorf("[Git] worktree add (%s): %v", file, err)
+	}
+
+	_, err = w.Commit(message, &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  user.Name,
+			Email: user.Email,
+			When:  time.Now(),
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("[Git] commit: %v", err)
+	}
+
+	return nil
+}
+
 // Tag tag last commit
-func Tag(dir string, version string) (*plumbing.Reference, error) {
+func Tag(dir string, version string, user *User) (*plumbing.Reference, error) {
 	r, err := git.PlainOpen(dir)
 	if err != nil {
 		return nil, fmt.Errorf("[Tag] open repo: %v", err)
@@ -39,8 +70,8 @@ func Tag(dir string, version string) (*plumbing.Reference, error) {
 
 	ref, err := r.CreateTag(version, head.Hash(), &git.CreateTagOptions{
 		Tagger: &object.Signature{
-			Name:  "Release",
-			Email: "release",
+			Name:  user.Name,
+			Email: user.Email,
 			When:  time.Now(),
 		},
 		Message: version,
@@ -68,7 +99,12 @@ func Push(dir string, version string) error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("[Push] push: %v", err)
+		switch err {
+		case git.ErrRemoteNotFound:
+			return nil
+		default:
+			return fmt.Errorf("[Push] push: %v", err)
+		}
 	}
 
 	return nil

@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+
+	"github.com/hekike/unchain/pkg/utils"
 )
 
-var runner Runner = commandRunner{}
+var runner utils.Runner = utils.CommandRunner{}
 
 // Package package.json
 type Package struct {

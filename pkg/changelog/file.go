@@ -6,10 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"time"
 
-	git "gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"github.com/hekike/unchain/pkg/git"
 )
 
 var changelogFile = "CHANGELOG.md"
@@ -40,32 +38,12 @@ func Prepend(dir string, content string) error {
 }
 
 // GitCommit adds CHANGELOG.md to Git
-func GitCommit(dir string, version string) error {
-	r, err := git.PlainOpen(dir)
+func GitCommit(dir string, version string, user *git.User) error {
+	message := fmt.Sprintf("chore(changelog): update for version %s", version)
+
+	err := git.Commit(dir, changelogFile, message, user)
 	if err != nil {
 		return fmt.Errorf("[GitAdd] open repo: %v", err)
-	}
-
-	w, err := r.Worktree()
-	if err != nil {
-		return fmt.Errorf("[GitAdd] worktree: %v", err)
-	}
-
-	_, err = w.Add(changelogFile)
-	if err != nil {
-		return fmt.Errorf("[GitAdd] worktree add (%s): %v", changelogFile, err)
-	}
-
-	message := fmt.Sprintf("chore(changelog): update for version %s", version)
-	_, err = w.Commit(message, &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "Release",
-			Email: "release",
-			When:  time.Now(),
-		},
-	})
-	if err != nil {
-		return fmt.Errorf("[GitAdd] git commit: %v", err)
 	}
 
 	return nil

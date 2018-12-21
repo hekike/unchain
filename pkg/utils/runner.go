@@ -1,4 +1,4 @@
-package npm
+package utils
 
 import "os/exec"
 
@@ -7,9 +7,11 @@ type Runner interface {
 	Run(string, string, ...string) ([]byte, error)
 }
 
-type commandRunner struct{}
+// CommandRunner runs a command
+type CommandRunner struct{}
 
-func (c commandRunner) Run(
+// Run runs a command
+func (c CommandRunner) Run(
 	dir string,
 	command string,
 	args ...string,
