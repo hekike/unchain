@@ -21,14 +21,14 @@ func TestParsePackage(t *testing.T) {
 	assert.Equal(t, "1.0.0", res.Version)
 }
 
-func TestBump(t *testing.T) {
+func TestVersion(t *testing.T) {
 	runner = TestRunner{}
 
 	d := "./mock"
 	v := "1.0.0"
 	s := "major"
 
-	res, err := Bump(d, v, s)
+	res, err := Version(d, v, s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,7 +36,8 @@ func TestBump(t *testing.T) {
 	assert.Equal(
 		t,
 		fmt.Sprintf(
-			"%s,version,%s,--message,chore(package): bump version to %s\n",
+			"%s,version,%s,--no-git-tag-version,"+
+				"--message,chore(package): bump version to %s\n",
 			d, s, v,
 		),
 		res,

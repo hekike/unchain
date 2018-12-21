@@ -94,21 +94,32 @@ func Release(path string, ch chan Result) {
 		return
 	}
 
-	// Release: npm
+	// Version: npm
 	if isNpm {
-		err = npm.Release(path, newVersion, string(change))
+		_, err = npm.Version(path, newVersion, string(change))
 		if err != nil {
 			ch <- Result{
-				Error: fmt.Errorf("[Release] npm: %v", err),
+				Error: fmt.Errorf("[npm] version: %v", err),
 			}
 			return
 		}
-	} else {
-		// Release: git
-		err = git.Release(path, newVersion)
+	}
+
+	// Release: Git
+	err = git.Release(path, newVersion)
+	if err != nil {
+		ch <- Result{
+			Error: fmt.Errorf("[Release] git: %v", err),
+		}
+		return
+	}
+
+	// Publish: npm
+	if isNpm {
+		_, err = npm.Publish(path)
 		if err != nil {
 			ch <- Result{
-				Error: fmt.Errorf("[Release] git: %v", err),
+				Error: fmt.Errorf("[npm] publish: %v", err),
 			}
 			return
 		}

@@ -17,7 +17,7 @@ func Release(dir string, version string) error {
 		return fmt.Errorf("[Release] tag: %v", err)
 	}
 
-	err = Push(dir)
+	err = Push(dir, version)
 	if err != nil {
 		return fmt.Errorf("[Release] push: %v", err)
 	}
@@ -53,17 +53,18 @@ func Tag(dir string, version string) (*plumbing.Reference, error) {
 }
 
 // Push push to remote
-func Push(dir string) error {
+func Push(dir string, version string) error {
 	r, err := git.PlainOpen(dir)
 	if err != nil {
 		return fmt.Errorf("[Push] open repo: %v", err)
 	}
 
 	// push using default options
+	tagRef := fmt.Sprintf("refs/tags/%s:refs/tags/%s", version, version)
 	err = r.Push(&git.PushOptions{
 		RefSpecs: []config.RefSpec{
 			config.RefSpec("refs/heads/master:refs/heads/master"),
-			config.RefSpec("refs/tags/*:refs/tags/*"),
+			config.RefSpec(tagRef),
 		},
 	})
 	if err != nil {
