@@ -13,6 +13,10 @@ type User struct {
 	Email string
 }
 
+func (u User) String() string {
+	return fmt.Sprintf("%s <%s>", u.Name, u.Email)
+}
+
 var runner utils.Runner = utils.CommandRunner{}
 
 // GetUser returns the git config user.name and user.email

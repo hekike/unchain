@@ -13,17 +13,17 @@ import (
 var changelogFile = "CHANGELOG.md"
 
 // Prepend prepend content to file
-func Prepend(dir string, content string) error {
+func Prepend(dir string, content string) (string, error) {
 	filePath := path.Join(dir, changelogFile)
 	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
-		return fmt.Errorf("[Prepend] open file: %v", err)
+		return changelogFile, fmt.Errorf("[Prepend] open file: %v", err)
 	}
 	defer f.Close()
 
 	current, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return fmt.Errorf("[Prepend] read file: %v", err)
+		return changelogFile, fmt.Errorf("[Prepend] read file: %v", err)
 	}
 
 	writer := bufio.NewWriter(f)
@@ -31,10 +31,10 @@ func Prepend(dir string, content string) error {
 	writer.Write(current)
 
 	if err := writer.Flush(); err != nil {
-		return fmt.Errorf("[Prepend] flush file: %v", err)
+		return changelogFile, fmt.Errorf("[Prepend] flush file: %v", err)
 	}
 
-	return nil
+	return changelogFile, nil
 }
 
 // GitCommit adds CHANGELOG.md to Git

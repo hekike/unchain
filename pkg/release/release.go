@@ -2,6 +2,7 @@ package release
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hekike/unchain/pkg/changelog"
 	"github.com/hekike/unchain/pkg/git"
@@ -10,8 +11,37 @@ import (
 	"github.com/hekike/unchain/pkg/semver"
 )
 
+// Phase describes the release phase
+type Phase string
+
+const (
+	// PhaseGetGitUser phase
+	PhaseGetGitUser Phase = "PhaseGetGitUser"
+	// PhaseParseCommits phase
+	PhaseParseCommits Phase = "PhaseParseCommits"
+	// PhaseLastVersionFromCommit phase
+	PhaseLastVersionFromCommit Phase = "PhaseLastVersionFromCommit"
+	// PhaseLastVersionFromPackage phase
+	PhaseLastVersionFromPackage Phase = "PhaseLastVersionFromPackage"
+	// PhaseLastVersionInconsistency phase
+	PhaseLastVersionInconsistency Phase = "PhaseLastVersionInconsistency"
+	// PhaseChangeFound phase
+	PhaseChangeFound Phase = "PhaseChangeFound"
+	// PhaseNextVersion phase
+	PhaseNextVersion Phase = "PhaseNextVersion"
+	// PhaseChangelogUpdated phase
+	PhaseChangelogUpdated Phase = "PhaseChangelogUpdated"
+	// PhasePackageVersion phase
+	PhasePackageVersion Phase = "PhasePackageVersion"
+	// PhaseGitRelease phase
+	PhaseGitRelease Phase = "PhaseGitRelease"
+	// PhasePackagePublish phase
+	PhasePackagePublish Phase = "PhasePackagePublish"
+)
+
 // Result result of release
 type Result struct {
+	Phase Phase
 	Message string
 	Error   error
 }
@@ -20,7 +50,7 @@ type Result struct {
 func Release(path string, ch chan Result) {
 	defer close(ch)
 
-	// Read Git User
+	// Get Git User
 	user, err := git.GetUser(path)
 	if err != nil {
 		ch <- Result{
@@ -28,8 +58,12 @@ func Release(path string, ch chan Result) {
 		}
 		return
 	}
+	ch <- Result{
+		Phase: PhaseGetGitUser,
+		Message: user.String(),
+	}
 
-	// Parse commits
+	// Parse Commits
 	commits, err := parser.ParseCommits(path)
 	if err != nil {
 		ch <- Result{
@@ -37,10 +71,9 @@ func Release(path string, ch chan Result) {
 		}
 		return
 	}
-	if len(commits) == 0 {
-		ch <- Result{
-			Message: "No new commit found",
-		}
+	ch <- Result{
+		Phase: PhaseParseCommits,
+		Message: strconv.Itoa(len(commits)),
 	}
 
 	// Read version from last bump commit if exist
@@ -49,6 +82,10 @@ func Release(path string, ch chan Result) {
 		lastCommit := commits[len(commits)-1]
 		if lastCommit.SemVer != "" {
 			version = lastCommit.SemVer
+			ch <- Result{
+				Phase: PhaseLastVersionFromCommit,
+				Message: version,
+			}
 		}
 	}
 
@@ -67,40 +104,59 @@ func Release(path string, ch chan Result) {
 			return
 		}
 		npmVersion = pkg.Version
+		ch <- Result{
+			Phase: PhaseLastVersionFromPackage,
+			Message: npmVersion,
+		}
 	}
 
 	// Inconsistency between commit history and package.json version
 	if npmVersion != "" && npmVersion != version {
 		ch <- Result{
+			Phase: PhaseLastVersionInconsistency,
 			Message: fmt.Sprintf(
-				"Inconsistency between package.json's version field %s and version found in git history %s\n",
+				"package.json: %s, git: %s",
 				npmVersion,
 				version,
 			),
 		}
-		ch <- Result{
-			Message: "Will use the version from the package.json",
-		}
 		version = npmVersion
 	}
 
-	// Calculate new version
+	// Find Change
 	change := semver.GetChange(commits)
+	ch <- Result{
+		Phase: PhaseChangeFound,
+		Message: string(change),
+	}
+
+	// Calculate new version
 	newVersion, err := semver.GetVersion(version, change)
 	if err != nil {
 		ch <- Result{
-			Error: fmt.Errorf("[Release] get semver version: %v", err),
+			Error: fmt.Errorf(
+				"[Release] get semver version: %v",
+				err,
+			),
 		}
 		return
 	}
+	ch <- Result{
+		Phase: PhaseNextVersion,
+		Message: newVersion,
+	}
 
 	// Generate changelog
-	_, err = changelog.Save(path, newVersion, commits, user)
+	cf, _, err := changelog.Save(path, newVersion, commits, user)
 	if err != nil {
 		ch <- Result{
 			Error: fmt.Errorf("[Release] save changelog: %v", err),
 		}
 		return
+	}
+	ch <- Result{
+		Phase: PhaseChangelogUpdated,
+		Message: cf,
 	}
 
 	// Version: npm
@@ -112,6 +168,9 @@ func Release(path string, ch chan Result) {
 			}
 			return
 		}
+		ch <- Result{
+			Phase: PhasePackageVersion,
+		}
 	}
 
 	// Release: Git
@@ -121,6 +180,10 @@ func Release(path string, ch chan Result) {
 			Error: fmt.Errorf("[Release] git: %v", err),
 		}
 		return
+	}
+	ch <- Result{
+		Phase: PhaseGitRelease,
+		Message: newVersion,
 	}
 
 	// Publish: npm
@@ -132,5 +195,9 @@ func Release(path string, ch chan Result) {
 			}
 			return
 		}
+		ch <- Result{
+			Phase: PhasePackagePublish,
+		}
+
 	}
 }

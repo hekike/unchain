@@ -31,13 +31,19 @@ remote. For npm libraries it also bumps the package.json file.`,
 			go release.Release(dir, results)
 
 			// Results
+			statusCounter := 0
 			for res := range results {
+				// Error
 				if res.Error != nil {
 					log.Fatal(res.Error)
 					os.Exit(1)
 				}
 
-				fmt.Println(res.Message)
+				// Result
+				statusCounter++
+				fmt.Printf("%d. ", statusCounter)
+
+				handleResult(res)
 			}
 		},
 	}
@@ -51,4 +57,64 @@ remote. For npm libraries it also bumps the package.json file.`,
 	)
 
 	return cmdRelease
+}
+
+func handleResult(res release.Result) {
+	switch res.Phase {
+	case release.PhaseGetGitUser:
+		fmt.Printf(
+			"git user found (%s)\n",
+			res.Message,
+		)
+	case release.PhaseParseCommits:
+		fmt.Printf(
+			"commits parsed (%s)\n",
+			res.Message,
+		)
+	case release.PhaseLastVersionFromCommit:
+		fmt.Printf(
+			"last version found in commits (%s)\n",
+			res.Message,
+		)
+	case release.PhaseLastVersionFromPackage:
+		fmt.Printf(
+			"last version found in package.json (%s)\n",
+			res.Message,
+		)
+	case release.PhaseLastVersionInconsistency:
+		fmt.Printf("last version inconsistency (%s)\n", res.Message)
+		log.Fatal("update your package.json file")
+		os.Exit(1)
+
+	case release.PhaseChangeFound:
+		fmt.Printf(
+			"change found (%s)\n",
+			res.Message,
+		)
+	case release.PhaseNextVersion:
+		fmt.Printf(
+			"next version calculated (%s)\n",
+			res.Message,
+		)
+	case release.PhaseChangelogUpdated:
+		fmt.Printf(
+			"changelog updated (%s)\n",
+			res.Message,
+		)
+	case release.PhasePackageVersion:
+		fmt.Print(
+			"package version bumped\n",
+		)
+	case release.PhaseGitRelease:
+		fmt.Printf(
+			"git tagged and pushed (%s)\n",
+			res.Message,
+		)
+	case release.PhasePackagePublish:
+		fmt.Print(
+			"package published\n",
+		)
+	default:
+		fmt.Println(res.Message)
+	}
 }

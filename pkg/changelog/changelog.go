@@ -15,22 +15,23 @@ func Save(
 	user *git.User,
 ) (
 	string,
+	string,
 	error,
 ) {
 	// Generate changelog
 	markdown := Generate(version, commits)
 
 	// Write changelog
-	err := Prepend(dir, markdown)
+	file, err := Prepend(dir, markdown)
 	if err != nil {
-		return markdown, fmt.Errorf("[Save] prepend: %v", err)
+		return file, markdown, fmt.Errorf("[Save] prepend: %v", err)
 	}
 
 	// Add to Git
 	err = GitCommit(dir, version, user)
 	if err != nil {
-		return markdown, fmt.Errorf("[Save] git commit: %v", err)
+		return file, markdown, fmt.Errorf("[Save] git commit: %v", err)
 	}
 
-	return markdown, nil
+	return file, markdown, nil
 }
