@@ -198,6 +198,5 @@ func Release(path string, ch chan Result) {
 		ch <- Result{
 			Phase: PhasePackagePublish,
 		}
-
 	}
 }
