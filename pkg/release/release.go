@@ -47,7 +47,7 @@ type Result struct {
 }
 
 // Release generate changelog and tag release
-func Release(path string, ch chan Result) {
+func Release(path string, change parser.SemVerChange, ch chan Result) {
 	defer close(ch)
 
 	// Get Git User
@@ -124,10 +124,12 @@ func Release(path string, ch chan Result) {
 	}
 
 	// Find Change
-	change := semver.GetChange(commits)
-	ch <- Result{
-		Phase: PhaseChangeFound,
-		Message: string(change),
+	if (change == "") {
+		change = semver.GetChange(commits)
+		ch <- Result{
+			Phase: PhaseChangeFound,
+			Message: string(change),
+		}
 	}
 
 	// Calculate new version

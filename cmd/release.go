@@ -5,12 +5,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/hekike/unchain/pkg/parser"
 	"github.com/hekike/unchain/pkg/release"
 	"github.com/spf13/cobra"
 )
 
 // GetReleaseCmd returns the release cmd
 func GetReleaseCmd() *cobra.Command {
+	var changeFlag string
+
 	// Default dir is the working directory
 	dir, err := os.Getwd()
 	if err != nil {
@@ -26,9 +29,16 @@ conventional commits and determinates the next version. It also
 tags the Git repository with the new version and pushed the change to
 remote. For npm libraries it also bumps the package.json file.`,
 		Run: func(cmd *cobra.Command, args []string) {
+			// Parse optional semver change flag
+			change, err := parseChangeFlag(changeFlag)
+			if err != nil {
+				log.Fatal(err)
+				os.Exit(1)
+			}
+
 			// Start release
 			results := make(chan release.Result)
-			go release.Release(dir, results)
+			go release.Release(dir, change, results)
 
 			// Results
 			statusCounter := 0
@@ -56,7 +66,33 @@ remote. For npm libraries it also bumps the package.json file.`,
 		"Repository directory",
 	)
 
+	cmdRelease.Flags().StringVarP(
+		&changeFlag,
+		"change",
+		"c",
+		"",
+		"SemVer change (patch|minor|major)",
+	)
+
 	return cmdRelease
+}
+
+func parseChangeFlag(changeFlag string) (change parser.SemVerChange, err error) {
+	if changeFlag == "" {
+		return change, err
+	}
+
+	switch changeFlag {
+	case "patch":
+		change = parser.Patch
+	case "minor":
+		change = parser.Minor
+	case "major":
+		change = parser.Major
+	default:
+		err = fmt.Errorf("Invalid semver change input: %s", changeFlag)
+	}
+	return change, err
 }
 
 func handleResult(res release.Result) {
