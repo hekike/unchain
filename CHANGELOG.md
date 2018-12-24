@@ -1,3 +1,13 @@
+<a name="2.3.0"></a>
+## 2.3.0 (2018-12-24)
+
+
+
+#### Features
+
+* **release:** support manual change input b6d254762cec7bcf42cbedc0d0ea41d24331dca0
+
+
 <a name="2.2.0"></a>
 ## 2.2.0 (2018-12-22)
 
