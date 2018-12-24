@@ -110,3 +110,16 @@ func ParseCommits(dir string) ([]ConventionalCommit, error) {
 
 	return commits, nil
 }
+
+// ToSemVerChange converts string to SemVerChange
+func ToSemVerChange(changeFlag string) (change SemVerChange) {
+	switch changeFlag {
+	case "patch":
+		change = Patch
+	case "minor":
+		change = Minor
+	case "major":
+		change = Major
+	}
+	return change
+}

@@ -82,16 +82,11 @@ func parseChangeFlag(changeFlag string) (change parser.SemVerChange, err error) 
 		return change, err
 	}
 
-	switch changeFlag {
-	case "patch":
-		change = parser.Patch
-	case "minor":
-		change = parser.Minor
-	case "major":
-		change = parser.Major
-	default:
+	change = parser.ToSemVerChange(changeFlag)
+	if change == "" {
 		err = fmt.Errorf("Invalid semver change input: %s", changeFlag)
 	}
+
 	return change, err
 }
 
