@@ -34,7 +34,7 @@ type ConventionalCommit struct {
 	SemVer       string
 }
 
-var pattern = regexp.MustCompile(`^(?:(\w+)\(?(\w+)\)?: (.+))(?:(?:\r?\n|$){0,2}(.+))?(?:(?:\r?\n|$){0,2}(.+))?(?:\r?\n|$){0,2}`)
+var pattern = regexp.MustCompile(`^(?:(\w+)\(?(\w+)?\)?: (.+))(?:(?:\r?\n|$){0,2}(.+))?(?:(?:\r?\n|$){0,2}(.+))?(?:\r?\n|$){0,2}`)
 var versionPattern = regexp.MustCompile(`^update for version ((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$`)
 var breakingChange = "BREAKING CHANGE: "
 
